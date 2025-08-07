@@ -1,5 +1,5 @@
 from pcb import Pcb
-from kicad import Kicad, NetClass, Setup, Via, Segment, Line, Text, Effects, Arc, Zone, Module, Pad
+from kicad import Kicad, NetClass, Setup, Via, Segment, Line, Text, Effects, Arc, Zone, Module, Pad, Layer
 from math import sin, cos, pi
 import sys
 
@@ -57,6 +57,49 @@ def pcb2kicad(pcb):
     kicad.version = '20171130'
     kicad.host = ['pcbnew', '5.0.0']
 
+    kicad.layers = [
+        Layer( 0, 'F.Cu',        'signal'),
+        Layer( 4, 'In1.Cu',      'signal'),
+        Layer( 6, 'In2.Cu',      'signal'),
+        Layer( 2, 'B.Cu',        'signal'),
+
+        Layer( 9, 'F.Adhes',     'user'),   # alias "F.Adhesive"
+        Layer(11, 'B.Adhes',     'user'),   # alias "B.Adhesive"
+
+        Layer(13, 'F.Paste',     'user'),
+        Layer(15, 'B.Paste',     'user'),
+
+        Layer( 5, 'F.SilkS',     'user'),   # alias "F.Silkscreen"
+        Layer( 7, 'B.SilkS',     'user'),   # alias "B.Silkscreen"
+
+        Layer( 1, 'F.Mask',      'user'),
+        Layer( 3, 'B.Mask',      'user'),
+
+        Layer(17, 'Dwgs.User',   'user'),   # alias "User.Drawings"
+        Layer(19, 'Cmts.User',   'user'),   # alias "User.Comments"
+        Layer(21, 'Eco1.User',   'user'),   # alias "User.Eco1"
+        Layer(23, 'Eco2.User',   'user'),   # alias "User.Eco2"
+
+        Layer(25, 'Edge.Cuts',   'user'),
+        Layer(27, 'Margin',      'user'),
+
+        Layer(31, 'F.CrtYd',     'user'),   # alias "F.Courtyard"
+        Layer(29, 'B.CrtYd',     'user'),   # alias "B.Courtyard"
+
+        Layer(35, 'F.Fab',       'user'),
+        Layer(33, 'B.Fab',       'user'),
+
+        Layer(39, 'User.1',      'user'),   # alias "Fab.Note"
+        Layer(41, 'User.2',      'user'),
+        Layer(43, 'User.3',      'user'),
+        Layer(45, 'User.4',      'user'),
+        Layer(47, 'User.5',      'user'),
+        Layer(49, 'User.6',      'user'),
+        Layer(51, 'User.7',      'user'),
+        Layer(53, 'User.8',      'user'),
+        Layer(55, 'User.9',      'user'),
+    ]
+
     #TODO thermal parameter in zones
 
     kicad.setup = Setup()
@@ -86,7 +129,7 @@ def pcb2kicad(pcb):
         elif l.name in ('silk', 'bottom silk'):
             l.name = 'B'
             topsilk = True
-        
+
 
     for s in pcb.styles:
         c = NetClass()
@@ -149,7 +192,7 @@ def pcb2kicad(pcb):
         for arc in e.arcs:
             m.arcs.append(kicadArc(arc, side + '.SilkS'))
             m.arcs.append(kicadArc(arc, side + '.Fab'))  #TODO optional?
-        
+
 
         kicad.modules.append(m)
 
